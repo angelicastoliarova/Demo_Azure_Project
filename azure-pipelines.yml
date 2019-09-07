@@ -10,7 +10,7 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-- script: export DISPLAY=:0.0
+- script: echo $DISPLAY
   displayName: Fix Display
 
 - task: Maven@3
