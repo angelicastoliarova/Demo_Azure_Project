@@ -7,13 +7,15 @@ trigger:
 - master
 
 pool:
-  vmImage: 'macOS-10.13'
+  vmImage: 'ubuntu-latest'
 
 steps:
 - task: CmdLine@2
   inputs:
     script: 'export DISPLAY=:0'
-
+- task: CmdLine@2
+  inputs:
+    script: 'setenv DISPLAY=:0'
 - task: Maven@3
   inputs:
     mavenPomFile: 'pom.xml'
