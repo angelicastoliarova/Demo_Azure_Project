@@ -10,6 +10,9 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
+- script: export DISPLAY=:0.0
+  displayName: Fix Display
+
 - task: Maven@3
   inputs:
     mavenPomFile: 'pom.xml'
@@ -19,4 +22,4 @@ steps:
     jdkArchitectureOption: 'x64'
     publishJUnitResults: true
     testResultsFiles: '**/TEST-*.xml'
-    goals: 'package'
+    goals: 'package -Djava.awt.headless=true'
