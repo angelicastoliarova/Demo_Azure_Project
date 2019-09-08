@@ -7,9 +7,7 @@ trigger:
 - master
 
 pool:
-  # vmImage: 'ubuntu-latest'
-  # vmImage: 'vs2017-win2016'
-  vmImage: 'macOS-10.13'
+  vmImage: 'ubuntu-latest'
 
 steps:
 - task: Maven@3
@@ -20,5 +18,5 @@ steps:
     jdkVersionOption: '1.8'
     jdkArchitectureOption: 'x64'
     publishJUnitResults: true
-    testResultsFiles: '**/TEST-*.xml'
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
     goals: 'package'
