@@ -7,7 +7,7 @@ trigger:
 - master
 
 pool:
-  vmImage: $(vmImage)
+  vmImage: $(image)
 
 steps:
 - task: Maven@3
@@ -21,8 +21,7 @@ steps:
     testResultsFiles: '**/TEST-*.xml'
     goals: 'package'
 
-- task: PublishBuildArtifacts@1
+- task: PublishPipelineArtifact@1
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'drop'
-    publishLocation: 'Container'
+    targetPath: '$(Pipeline.Workspace)'
+    artifact: 'PipelineArtifacts'
