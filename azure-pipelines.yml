@@ -3,25 +3,41 @@
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/java
 
-trigger:
-- master
+jobs:
+- job: PopoHiQoSOnlinerTest
+  pool:
+    vmImage: $(vmImageVar)
+#    vmImage: 'vs2017-win2016'
+#    vmImage: 'Ubuntu 16.04'
+#    vmImage: 'macOS-10.13'
 
-pool:
-  vmImage: $(image)
+  steps:
+  - script: ls
+    displayName: ls command
+  - task: Maven@3
+    displayName: Maven Package
+    inputs:
+      mavenPomFile: 'pom.xml'
+      mavenOptions: '-Xmx3072m'
+      javaHomeOption: 'JDKVersion'
+      jdkVersionOption: '1.8'
+      jdkArchitectureOption: 'x64'
+      publishJUnitResults: false
+      goals: 'clean compile test site -Dmaven.wagon.http.pool=false'
 
-steps:
-- task: Maven@3
-  inputs:
-    mavenPomFile: 'pom.xml'
-    mavenOptions: '-Xmx3072m'
-    javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.8'
-    jdkArchitectureOption: 'x64'
-    publishJUnitResults: true
-    testResultsFiles: '**/TEST-*.xml'
-    goals: 'package'
+  - task: PublishBuildArtifacts@1
+    displayName: Publish Build Artifacts
+    inputs:
+      PathtoPublish: '$(System.DefaultWorkingDirectory)'
+      name: 'drop'
 
-- task: PublishPipelineArtifact@1
-  inputs:
-    targetPath: '$(Pipeline.Workspace)'
-    artifact: 'PipelineArtifacts'
+    # Publish Test Results to Azure Pipelines/TFS
+  - task: PublishTestResults@2
+    displayName: Publish Test Results
+    inputs:
+      testResultsFormat: 'JUnit' # Options: JUnit, NUnit, VSTest, xUnit, cTest
+      testResultsFiles: '**/TEST-*.xml'
+      searchFolder: '$(System.DefaultWorkingDirectory)'
+      mergeTestResults: false # Optional
+      failTaskOnFailedTests: true # Optional
+      publishRunAttachments: true # Optional
